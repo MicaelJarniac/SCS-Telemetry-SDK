@@ -17,9 +17,9 @@ The ETS2/ATS provides several console commands to manipulate the APIs to simplif
 Does de-initialize/initialize cycle for all APIs on all plugins. Useful if the plugin is loading some configuration from file during initialization.
 
 - `sdk unload`  
-De-initializes all APIs and unloads all plugins. Useful if you want to build a new version of the plugin. Use "sdk reload" to load the new plugin.
+De-initializes all APIs and unloads all plugins. Useful if you want to build a new version of the plugin. Use `sdk reload` to load the new plugin.
 
-- `sdk reload`
+- `sdk reload`  
 De-initializes all APIs, unloads all plugins, reloads all plugins and initializes the APIs.
 
 ## Calling conventions and threading
@@ -34,16 +34,16 @@ To provide compatibility with the future changes of the API there is a version n
 
 The API version number is composed from major and minor components. Major version is increased when there is incompatible change. The minor version is increased when there is a backwards compatible change (e.g. addition of event or value type if it does not change the layout of the `scs_value_t` structure for existing types).
 
-In addition to the API version, the initialization parameter contains identification of the game and API-specific game version (e.g. there might be one version for telemetry API and different one for some future API). This information is mainly intended to be used to allow customization of the plugin behavior for specific game. As with the APi version there are both major and minor components however there are several differences. There is no negotiation mechanism and the game supports exactly one game version. Removal of telemetry channel is considered a backward compatible change as the plugin is notified about that by failure of the callback registration and can assume default value.
+In addition to the API version, the initialization parameter contains identification of the game and API-specific game version (e.g. there might be one version for telemetry API and different one for some future API). This information is mainly intended to be used to allow customization of the plugin behavior for specific game. As with the API version there are both major and minor components however there are several differences. There is no negotiation mechanism and the game supports exactly one game version. Removal of telemetry channel is considered a backward compatible change as the plugin is notified about that by failure of the callback registration and can assume default value.
 
 ## Telemetry API
-Telemetry API provides output of various dynamic (e.g. truck speed) or semi-dynamic (e.g. truck parameters) information. Telemetry supports two kinds of callbacks:
+Telemetry API provides output of various **dynamic** (e.g. truck speed) or **semi-dynamic** (e.g. truck parameters) information. Telemetry supports two kinds of callbacks:
 
-- Events  
-Global callbacks called to indicate specific phase of processing (e.g. start/end of telemetry per frame data) or to notify about change in semi-dynamic data (e.g. changed truck parameters because user switched to a different truck). The event callbacks are provided with id of the event, pointer to event-specific structure with additional information and context information specified during callback registration. It is possible to register channel callbacks from within event callback. This is useful when configuration events (e.g. truck change) are received.
+- ### Events
+  Global callbacks called to indicate specific phase of processing (e.g. start/end of telemetry per frame data) or to notify about change in **semi-dynamic** data (e.g. changed truck parameters because user switched to a different truck). The event callbacks are provided with id of the event, pointer to event-specific structure with additional information and context information specified during callback registration. It is possible to register channel callbacks from within event callback. This is useful when configuration events (e.g. truck change) are received.
 
-- Channels  
-Associated with individual sources of telemetry information (e.g. position, speed, rpm). The callback is called when value in corresponding source is changed or is assumed to be changed (e.g. for some inputs the game assumes that the value is changing most of the time anyway and will not filter the calls). The callback is provided with identification of the channel, its new value and context information specified during callback registration. Some sources can provide the value in more than one format (e.g. as double or float). In that case the callback will receive value in the format specified during callback registration.
+- ### Channels
+  Associated with individual sources of telemetry information (e.g. position, speed, rpm). The callback is called when value in corresponding source is changed or is assumed to be changed (e.g. for some inputs the game assumes that the value is changing most of the time anyway and will not filter the calls). The callback is provided with identification of the channel, its new value and context information specified during callback registration. Some sources can provide the value in more than one format (e.g. as double or float). In that case the callback will receive value in the format specified during callback registration.
 
 Note that the game might contain additional channels and configurations with "dev." prefix which are not documented. They are used for development purposes or contain unrealistic values and might be changed or removed at any time so the plugins should ignore them. If you would need information provided by those objects, please let us know.
 
